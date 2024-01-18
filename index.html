@@ -12,6 +12,19 @@
           <img src="./static/Mozilla.svg" style="height: 32px" alt="Mozilla" />
         </div>
         <h1>Platform Tilt</h1>
+        <p>
+          This dashboard tracks technical issues in major software platforms
+          which disadvantage Firefox relative to the first-party browser. We
+          consider aspects like security, stability, performance, and
+          functionality, and propose changes to create a more level playing
+          field.
+        </p>
+        <p>
+          Further discussion on the live issues can be found in our
+          <a href="https://github.com/mozilla/platform-tilt/"
+            >platform-tilt issue tracker</a
+          >.
+        </p>
       </div>
       <div class="col-sm-1"></div>
       <div class="col-sm-10">
@@ -1000,7 +1013,7 @@
         //  return;
         //}
         if (element && element.tagName.toLowerCase() === "details")
-          details.open = true;
+          element.open = true;
       }
       window.addEventListener("hashchange", openTarget);
       openTarget();

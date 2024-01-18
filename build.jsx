@@ -36,6 +36,19 @@ function pageHTML(children) {
                 />{" "}
               </div>
               <h1>Platform Tilt</h1>
+              <p>
+                This dashboard tracks technical issues in major software
+                platforms which disadvantage Firefox relative to the first-party
+                browser. We consider aspects like security, stability,
+                performance, and functionality, and propose changes to create a
+                more level playing field.
+              </p>
+              <p>
+                Further discussion on the live issues can be found in our <a href="https://github.com/mozilla/platform-tilt/">
+                  platform-tilt issue tracker
+                </a>
+                .
+              </p>
             </div>
 
             <div class="col-sm-1"></div>
@@ -58,7 +71,7 @@ function pageHTML(children) {
       //  [...element.closest("table").querySelectorAll("details")].forEach((details) => details.open = true);
       //  return;
       //}
-      if (element && element.tagName.toLowerCase() === 'details') details.open = true;
+      if (element && element.tagName.toLowerCase() === 'details') element.open = true;
     }
     window.addEventListener('hashchange', openTarget);
     openTarget();
