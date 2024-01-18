@@ -1,0 +1,64 @@
+@import url("bootstrap.min.css");
+
+
+@font-face {
+  font-family: "Zilla Slab";
+  font-weight: bold;
+  src: url("ZillaSlab-Bold.woff2") format("woff2");
+}
+.jumbotron h1 {
+ font-weight: bold;
+ font-family: "Zilla Slab", serif;
+}
+/* https://github.com/twbs/bootstrap/issues/21060#issuecomment-257607922 */
+details > summary:first-of-type {
+  display: list-item;
+}
+table {
+  white-space: normal;
+  width: 100%;
+  margin-top: 40px;
+}
+table td, table th, table tr {
+  padding: 0 5px;
+}
+caption {
+  background: #f3f3f3;
+  padding: 10px 4px;
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+summary {
+  font-size: 1.1em;
+}
+details {
+  padding: 5px;
+  margin: 0;
+  display: block;
+}
+table .title {
+  width: 100%;
+}
+table .state {
+  vertical-align: top;
+  white-space: nowrap; 
+}
+table tr:nth-child(2n) {
+  background-color: var(--color-bg);
+}
+
+.issue-body {
+  padding: 5px 10px;
+  color: #555;
+  margin-top: 3px;
+  margin-inline-start: 10px;
+  background: #f3f3ff;
+}
+
+blockquote {
+  font-size: 1.1em;
+}
+
+.internal-link {
+  padding-inline-start: 5px;
+}

@@ -1,0 +1,1009 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Platform Tilt - Mozilla</title>
+    <link rel="stylesheet" href="static/page.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="jumbotron">
+        <div style="position: absolute; top: 0">
+          <img src="./static/Mozilla.svg" style="height: 32px" alt="Mozilla" />
+        </div>
+        <h1>Platform Tilt</h1>
+      </div>
+      <div class="col-sm-1"></div>
+      <div class="col-sm-10">
+        <table>
+          <caption id="issues_apple">
+            Vendor:
+            <b style="text-transform: capitalize">apple</b>
+          </caption>
+          <thead>
+            <tr>
+              <th>Issue</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="title">
+                <details id="issue_1">
+                  <summary>
+                    <a href="https://github.com/mozilla/platform-tilt/issues/1"
+                      >App Store forbids third-party browser engines</a
+                    > <a
+                      class="internal-link"
+                      href="#issue_1"
+                      title="Permalink to this issue"
+                      >#</a
+                    > 
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      <a
+                        href="https://developer.apple.com/app-store/review/guidelines/#software-requirements"
+                        >Rule 2.5.6</a
+                      >
+                      of the Apple App Store Review Guidelines forbids the usage
+                      of third-party browser engines:
+                    </p>
+                    <blockquote>
+                      <p>
+                        2.5.6 Apps that browse the web must use the appropriate
+                        WebKit framework and WebKit JavaScript
+                      </p>
+                    </blockquote>
+                    <p>
+                      Notably, this means that Firefox can’t be shipped with
+                      Gecko on iOS. It also means that Firefox can’t be
+                      distributed in the App Store on other Apple platforms like
+                      macOS. The App Store policy should be updated to allow
+                      third-party browser engines for web browsers.
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state">open</td>
+            </tr>
+            <tr>
+              <td class="title">
+                <details id="issue_2">
+                  <summary>
+                    <a href="https://github.com/mozilla/platform-tilt/issues/2"
+                      >Support for third-party multi-process applications on
+                      iOS</a
+                    > <a
+                      class="internal-link"
+                      href="#issue_2"
+                      title="Permalink to this issue"
+                      >#</a
+                    > 
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      All modern web browsers employ a multi-process
+                      architecture where a single browser application is
+                      implemented as a collection of operating system processes
+                      with one main process that spawns child processes. This
+                      generally involves loading each site in a separate
+                      process, and moving certain sensitive functionality (e.g.,
+                      GPU usage) into a dedicated process. This design allows
+                      the browser to be more resilient against crashes, more
+                      responsive under load, more secure against malicious
+                      exploits, and less susceptible to information leaks like
+                      Spectre. Most applications don’t need this level of
+                      granular isolation, but for browsers — which load
+                      interactive content from many different origins — it’s a
+                      table-stakes requirement.
+                    </p>
+                    <p>
+                      On iOS, Safari uses a multi-process architecture. However,
+                      it does so with a proprietary mechanism that is not
+                      available to third-party applications unless they use
+                      Safari’s WebKit engine. To support third-party browser
+                      engines, iOS should provide a mechanism to create and
+                      efficiently communicate with isolated child processes.
+                    </p>
+                    <p>Some basic requirements:</p>
+                    <ul>
+                      <li>
+                        The number of child processes and their duration are
+                        dictated by user browsing behavior and should not be
+                        fixed outside of reasonable device constraints.
+                      </li>
+                      <li>
+                        The child process should be configurable with tightly
+                        controlled privileges while permitting inter-process
+                        communication using messaging and shared memory.
+                      </li>
+                      <li>
+                        The parent process must be able to establish shared
+                        memory mappings with child processes and vice versa.
+                        Child processes must be able to communicate with each
+                        other in the same way.
+                      </li>
+                      <li>
+                        Access to shared memory regions should be configurable
+                        as read/write or read-only per region.
+                      </li>
+                      <li>
+                        For optimal security, child processes’
+                        entitlements/privileges should be configured
+                        independently from the parent process and the parent
+                        process should be able to create child processes of
+                        different types using different executables.
+                      </li>
+                      <li>
+                        Child processes should be able to load libraries from
+                        the bundle that are shared with the parent process.
+                      </li>
+                      <li>
+                        To support isolating GPU access to a GPU process, child
+                        processes should be able to use Metal or OpenGL (when
+                        configured as such) to render into an IOSurface. Child
+                        processes should be able to share IOSurfaces across
+                        processes.
+                      </li>
+                    </ul>
+                    <p>
+                      Firefox uses a shared codebase across different operating
+                      systems with platform-specific adapters for functionality
+                      like process management. Some quirks may be inevitable,
+                      but it’s important that the interface and behavior be
+                      broadly similar to other platforms like macOS and Android
+                      so as to avoid systematically breaking assumptions in
+                      overall browser architecture and platform-specific code.
+                      Something shaped like posix_spawn would be a reasonable
+                      starting point.
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state">open</td>
+            </tr>
+            <tr>
+              <td class="title">
+                <details id="issue_3">
+                  <summary>
+                    <a href="https://github.com/mozilla/platform-tilt/issues/3"
+                      >JIT Support on iOS</a
+                    > <a
+                      class="internal-link"
+                      href="#issue_3"
+                      title="Permalink to this issue"
+                      >#</a
+                    > 
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      In order to ship a performant JavaScript/WebAssembly
+                      engine, a necessary component of a modern web browser, it
+                      must be possible for browser processes to create memory
+                      regions that are both writable and executable. However,
+                      applications on iOS are prevented from creating such
+                      memory regions because the system call used to configure
+                      memory region permissions (<code>mmap(2)</code>) does not
+                      allow it.
+                    </p>
+                    <p>
+                      This is sound default behavior that improves security in
+                      general, but web browsers need this capability. As
+                      evidence, an exception is made for Safari’s WebKit
+                      rendering engine on iOS, allowing writable and executable
+                      memory regions to be created.
+                    </p>
+                    <p>
+                      The same general security mitigation is employed on macOS,
+                      but on macOS applications like web browsers can opt-out by
+                      using entitlements. To allow these memory regions for
+                      non-WebKit browsers on iOS, iOS should allow an equivalent
+                      entitlement to the macOS Hardened Runtime entitlement
+                      <a
+                        href="https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_allow-jit"
+                        >com.apple.security.cs.allow-jit</a
+                      >
+                      (which permits use of the <code>mmap(2)</code> system call
+                      using the <code>MAP_JIT</code> flag) and include its
+                      <a
+                        href="https://developer.apple.com/documentation/apple-silicon/porting-just-in-time-compilers-to-apple-silicon"
+                        >accompanying APIs pthread_jit_write_protect_np and
+                        sys_icache_invalidate</a
+                      >. These APIs are already in iOS, but only Safari and
+                      other Apple applications are permitted to use them.
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state">open</td>
+            </tr>
+            <tr>
+              <td class="title">
+                <details id="issue_4">
+                  <summary>
+                    <a href="https://github.com/mozilla/platform-tilt/issues/4"
+                      >Accessibility APIs on iOS</a
+                    > <a
+                      class="internal-link"
+                      href="#issue_4"
+                      title="Permalink to this issue"
+                      >#</a
+                    > 
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      The iOS
+                      <a
+                        href="https://developer.apple.com/documentation/uikit/accessibility_for_uikit?language=objc"
+                        >accessibility API documentation</a
+                      >
+                      is incomplete, and many APIs that are needed for a web
+                      browser to support accessibility web standards are
+                      undocumented. Further, it’s difficult to infer how to use
+                      them based on WebKit’s open source implementation because
+                      there appears to be a closed-source system bundle which is
+                      tailored for and loaded into WebKit at runtime.
+                    </p>
+                    <p>
+                      This lack of visibility makes it difficult to enumerate a
+                      full list of gaps. There are many closed-source methods
+                      loaded at runtime, and we don’t have visibility into their
+                      full signature or how they are used. Here are a couple
+                      examples that we know of:
+                    </p>
+                    <ol>
+                      <li>
+                        While some
+                        <a
+                          href="https://developer.apple.com/documentation/uikit/uiaccessibilitytraits?language=objc"
+                          >trait integer constants are public</a
+                        >, others needed for a web engine like “visited”, or
+                        “radio button” are not.
+                      </li>
+                      <li>
+                        While some
+                        <a
+                          href="https://developer.apple.com/documentation/uikit/accessibility_for_uikit/notification_names?language=objc"
+                          >notification type integer constants are public</a
+                        >, others needed for a web engine, like “value changed”
+                        are not. The closed-source bundle has a method loaded at
+                        runtime into the WebKit wrapper named
+                        <code>accessibilityOverrideProcessNotification</code>.
+                        It takes a string, such as
+                        <code>AXValueChanged</code> or
+                        <code>AXSelectedTextChanged</code>, internally maps it
+                        to a private integer constant representing the
+                        notification type, and forwards it to the platform via
+                        <code>UIAccessibilityPostNotification</code>.
+                      </li>
+                    </ol>
+                    <p>
+                      Supporting accessibility web standards is table stakes
+                      functionality for a web browser. In order to do this, all
+                      of the accessibility APIs used by WebKit must be
+                      documented and stable, and WebKit should ideally consume
+                      them in the same manner as third-party browser engines.
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state">open</td>
+            </tr>
+            <tr>
+              <td class="title">
+                <details id="issue_5">
+                  <summary>
+                    <a href="https://github.com/mozilla/platform-tilt/issues/5"
+                      >Messages integration on iOS</a
+                    > <a
+                      class="internal-link"
+                      href="#issue_5"
+                      title="Permalink to this issue"
+                      >#</a
+                    > 
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      In Safari on iOS, the home page includes a convenience
+                      feature where
+                      <a
+                        href="https://support.apple.com/guide/iphone/find-links-shared-with-you-iph25424a81d/ios"
+                        >links that were recently received in the Message app
+                        are shown</a
+                      >
+                      along with the contact that sent them. Third-party
+                      browsers cannot offer the same functionality because they
+                      don't have access to Messages data. iOS should expose an
+                      API to third-party browsers so they can implement their
+                      own features using Message links similar to Safari.
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state">open</td>
+            </tr>
+            <tr>
+              <td class="title">
+                <details id="issue_6">
+                  <summary>
+                    <a href="https://github.com/mozilla/platform-tilt/issues/6"
+                      >Importing browser data on iOS</a
+                    > <a
+                      class="internal-link"
+                      href="#issue_6"
+                      title="Permalink to this issue"
+                      >#</a
+                    > 
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      Browsing information like history, bookmarked sites, and
+                      cookies isn’t accessible to third-party browsers on iOS,
+                      and there’s no API to allow this data to be imported.
+                      While this is sensitive data, similar import functionality
+                      is possible on all major desktop platforms, and iOS is
+                      able to mediate access to other sensitive data with user
+                      consent (e.g.,
+                      <a
+                        href="https://support.apple.com/guide/iphone/share-your-health-data-iph5ede58c3d/ios"
+                        >health and fitness data</a
+                      >). Not being able to import data creates significant
+                      friction to change from Safari - a user should be allowed
+                      to bring their data with them to another browser.
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state">open</td>
+            </tr>
+            <tr>
+              <td class="title">
+                <details id="issue_9">
+                  <summary>
+                    <a href="https://github.com/mozilla/platform-tilt/issues/9"
+                      >Setting and checking default browser on iOS</a
+                    > <a
+                      class="internal-link"
+                      href="#issue_9"
+                      title="Permalink to this issue"
+                      >#</a
+                    > 
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      Allowing a third-party browser to programmatically set
+                      itself as the default is an important platform feature.
+                      Without this, even after the user has installed the
+                      browser of their choice they must navigate operating
+                      system settings and make the choice there as well. This
+                      adds friction and creates inertia to continue using
+                      Safari, despite the user's preference.
+                    </p>
+                    <p>
+                      A well-established design pattern is to allow the
+                      third-party browser to invoke a system prompt which
+                      permits the user to easily confirm or reject the request
+                      to set the current browser as the default. This is an
+                      intuitive user experience that mirrors similar permissions
+                      models used in operating systems, browsers, and web
+                      applications. Android and macOS offer such a capability
+                      (on Android by requesting to hold the
+                      <a
+                        href="https://developer.android.com/reference/android/app/role/RoleManager#ROLE_BROWSER"
+                        >browser role</a
+                      >
+                      and on macOS using
+                      <a
+                        href="https://developer.apple.com/documentation/coreservices/1447760-lssetdefaulthandlerforurlscheme"
+                        >LSSetDefaultHandlerForURLScheme</a
+                      >/<a
+                        href="https://developer.apple.com/documentation/coreservices/1444955-lssetdefaultrolehandlerforconten"
+                        >LSSetDefaultRoleHandlerForContentType</a
+                      >).
+                    </p>
+                    <p>
+                      Unfortunately, iOS does not support anything like this for
+                      third-party browsers: browsers are forced to “deep link”
+                      into the iOS settings UI, at which point the user must
+                      understand the UI and make the change on their own. For
+                      users that try to find the setting themselves, when using
+                      the search feature in the iOS Settings app, no results are
+                      returned for “Default browser app” (the text identifying
+                      the default browser elsewhere in the iOS Settings app) nor
+                      &quot;Default&quot; (which matches several other default
+                      applications in the iOS Settings app) -- see
+                      <a href="#screenshots">screenshots</a>. iOS should instead
+                      provide a method for third-party browsers to
+                      programmatically request they be set as the default.
+                    </p>
+                    <p>
+                      Furthermore, a third-party browser cannot even detect if
+                      it currently is the default browser on iOS. This prevents
+                      them from understanding how their browser is used and
+                      limits their ability to optimize the browser based on user
+                      intent. This also makes it impossible to identify the
+                      conditions in which it would be appropriate to ask the
+                      user if they’d like to change their default since the
+                      browser should only prompt in cases where it’s not
+                      currently the default. iOS should provide a method for
+                      third-party browsers to programmatically detect if they
+                      are the default browser, as exists on all other major
+                      platforms.
+                    </p>
+                    <h4>Screenshots</h4>
+                    <p>
+                      Screenshots from iOS 17.2.1 which depict that searching
+                      Settings for “Default browser app” and “Default” do not
+                      show results for changing the default browser.
+                    </p>
+                    <p>
+                      <img
+                        src="https://github.com/mozilla/platform-tilt/assets/1097182/d55922c7-18c4-4b1c-9e9a-1533d788207d"
+                        width="300"
+                      />
+                      <img
+                        src="https://github.com/mozilla/platform-tilt/assets/1097182/69b33d48-89a6-478f-b21f-9b8dff72e2fa"
+                        width="300"
+                      />
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state">open</td>
+            </tr>
+            <tr>
+              <td class="title">
+                <details id="issue_11">
+                  <summary>
+                    <a href="https://github.com/mozilla/platform-tilt/issues/11"
+                      >Origin-Based Associated Domains dependent features for
+                      third-party browser engines on iOS</a
+                    > <a
+                      class="internal-link"
+                      href="#issue_11"
+                      title="Permalink to this issue"
+                      >#</a
+                    > 
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      In order to support features such as
+                      <a
+                        href="https://developer.apple.com/documentation/security/password_autofill"
+                        >password autofill</a
+                      >,
+                      <a
+                        href="https://developer.apple.com/documentation/security/one-time_codes"
+                        >one-time codes</a
+                      >,
+                      <a
+                        href="https://developer.apple.com/documentation/authenticationservices/public-private_key_authentication/supporting_passkeys"
+                        >passkeys</a
+                      >, and
+                      <a
+                        href="https://developer.apple.com/documentation/passkit/apple_pay/"
+                        >Apple Pay</a
+                      >, non-WebKit browsers must be able to specify an
+                      <a
+                        href="https://developer.apple.com/documentation/xcode/supporting-associated-domains"
+                        >associated domain</a
+                      >
+                      based on the web-content origin when using their APIs.
+                      WebKit-based browsers override the browser application’s
+                      associated domain (e.g., mozilla.com for Firefox) to be
+                      able to perform password autofill for the domain the user
+                      is browsing.
+                    </p>
+                    <p>
+                      Non-WebKit browsers must also have this capability. For
+                      example, when a user is entering a password on a text
+                      field on site example.com, the browser should be able to
+                      indicate the password field corresponds to origin
+                      example.com so that the password manager can be invoked
+                      with a scope of example.com.
+                    </p>
+                    <p>
+                      The intent of this issue is to cover the functionality
+                      needed for non-WebKit browsers to support these features
+                      using OS support available to Safari. Origin-based
+                      associated domains underpins this support, but additional
+                      functionality may need to be made available to non-WebKit
+                      browsers as well. For example, supporting Apple Pay may
+                      require additional changes so that third-party browsers
+                      are not bound by associated merchant identifiers and can
+                      accept payments for any registered Apple Pay payee like
+                      Safari.
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state">open</td>
+            </tr>
+            <tr>
+              <td class="title">
+                <details id="issue_15">
+                  <summary>
+                    <a href="https://github.com/mozilla/platform-tilt/issues/15"
+                      >Browser extension support on iOS</a
+                    > <a
+                      class="internal-link"
+                      href="#issue_15"
+                      title="Permalink to this issue"
+                      >#</a
+                    > 
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      Browser extensions are a key part of the web ecosystem and
+                      most popular browsers support them. Browser extensions
+                      allow developers to add functionality to the browser
+                      providing increased utility, usability, and
+                      interoperability with applications installed on the
+                      system.
+                    </p>
+                    <p>
+                      For distribution, popular browsers have established
+                      extension catalogs that are available on the open web and
+                      curated by the browser vendors. Because extensions have
+                      elevated privileges, developers submit them to be approved
+                      to ensure safety and compatibility. Browser vendors make
+                      their own decisions about the APIs available to
+                      extensions. Extensions for each browser are installed and
+                      managed within the browser resulting in a common user
+                      experience across platforms.
+                    </p>
+                    <p>
+                      <a href="https://developer.apple.com/safari/extensions/"
+                        >Safari supports extensions</a
+                      >
+                      distributed on the iOS App Store. However, third party
+                      browsers are prevented from offering their own established
+                      extension functionality because it would violate section
+                      2.5.2 of the
+                      <a
+                        href="https://developer.apple.com/app-store/review/guidelines/#software-requirements"
+                        >App Store Review Guidelines</a
+                      >. To allow third-party browsers to offer the same
+                      functionality and be competitive with respect to browser
+                      extensibility, the App Store software requirements should
+                      be relaxed to permit third-party browsers to use their own
+                      extension catalogs. Third-party browsers could then use
+                      the existing web-based distribution model (where users can
+                      browse and install extensions directly from the browser)
+                      allowing for browser extensions to be used on iOS,
+                      similarly to other mobile and desktop platforms.
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state">open</td>
+            </tr>
+            <tr>
+              <td class="title">
+                <details id="issue_16">
+                  <summary>
+                    <a href="https://github.com/mozilla/platform-tilt/issues/16"
+                      >Beta testing on iOS</a
+                    > <a
+                      class="internal-link"
+                      href="#issue_16"
+                      title="Permalink to this issue"
+                      >#</a
+                    > 
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      Beta testing is a critical part of the web browser release
+                      cycle which, for popular browsers, results in new major
+                      versions shipping at a monthly cadence. Browser stability
+                      and quality is dependent on a large and active beta
+                      testing audience. Due to the dynamic nature and enormous
+                      size of the web platform, new web APIs are frequently
+                      added and adopted by web sites, and new features and fixes
+                      are continuously developed. As a result, many problems are
+                      discovered and fixed in the beta phase which enables the
+                      vast majority of users to have a smoother experience.
+                    </p>
+                    <p>
+                      On other platforms, separate Beta and Nightly builds can
+                      be distributed using the typical platform affordances. On
+                      iOS, beta versions of applications are not permitted on
+                      the App Store and instead are distributed through a
+                      separate
+                      <a href="https://developer.apple.com/testflight"
+                        >TestFlight</a
+                      >
+                      system. This has a few issues:
+                    </p>
+                    <p>
+                      TestFlight has a 10,000 user limit, which is a tiny
+                      fraction of the beta population for web browsers with
+                      large user bases. The limitation becomes a maintenance
+                      burden for browser developers: when reaching the limit,
+                      old users must be manually removed from the list. The user
+                      experience for prerelease testers is more complicated than
+                      on other platforms: users must download the separate
+                      TestFlight application, sign up for an access code, wait
+                      to receive it, and then paste it into the application.
+                      Distributing with a public link is not feasible because of
+                      the user limit restriction.
+                    </p>
+                    <p>
+                      This may be solved by allowing browsers to distribute
+                      prerelease builds in the App Store, or by making changes
+                      to Test Flight (removing the user limit entirely and
+                      allowing unlimited distribution from a public link without
+                      manual management). In any case, prerelease testing should
+                      not create more friction than exists for Safari: new
+                      versions of the Safari web browser are included in beta
+                      versions of the iOS operating system and do not face the
+                      same restrictions.
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state">open</td>
+            </tr>
+          </tbody>
+        </table>
+        <table>
+          <caption id="issues_google">
+            Vendor:
+            <b style="text-transform: capitalize">google</b>
+          </caption>
+          <thead>
+            <tr>
+              <th>Issue</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="title">
+                <details id="issue_7">
+                  <summary>
+                    <a href="https://github.com/mozilla/platform-tilt/issues/7"
+                      >Importing browser data on Android</a
+                    > <a
+                      class="internal-link"
+                      href="#issue_7"
+                      title="Permalink to this issue"
+                      >#</a
+                    > 
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      Browsing information like history, bookmarked sites, and
+                      cookies isn’t accessible to third-party browsers on
+                      Android. This data is kept within a web browser
+                      application’s
+                      <a
+                        href="https://developer.android.com/training/data-storage/app-specific#internal"
+                        >data directory</a
+                      >, which isn’t directly accessible to third-party
+                      browsers, and there’s no API or
+                      <a
+                        href="https://developer.android.com/guide/topics/providers/content-provider-basics"
+                        >ContentProvider</a
+                      >
+                      to enable it to be imported. While this is sensitive data,
+                      similar import functionality is possible on all major
+                      desktop platforms, and Android is able to mediate access
+                      to other sensitive data with user consent. Not being able
+                      to import data creates significant friction to change from
+                      Chrome - a user should be allowed to bring their data with
+                      them to another browser.
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state">open</td>
+            </tr>
+            <tr>
+              <td class="title">
+                <details id="issue_8">
+                  <summary>
+                    <a href="https://github.com/mozilla/platform-tilt/issues/8"
+                      >Some Android features launch Chrome instead of the user’s
+                      default browser</a
+                    > <a
+                      class="internal-link"
+                      href="#issue_8"
+                      title="Permalink to this issue"
+                      >#</a
+                    > 
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      Features like Google Search, or Discover, in the
+                      pre-installed
+                      <a
+                        href="https://play.google.com/store/apps/details?id=com.google.android.googlequicksearchbox"
+                        >Google application</a
+                      >
+                      ignore the user’s default browser choice: links to
+                      websites outside of the application are always opened in
+                      Chrome, regardless of the default browser. This is a
+                      widely used application, with additional entry points from
+                      built-in features such as the search bar on the home
+                      screen and app launcher. Each time it opens a link in
+                      Chrome, a user is driven away from their default browser.
+                    </p>
+                    <p>
+                      All built-in applications and affordances that open
+                      external links should open them in the user’s default
+                      browser.
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state">open</td>
+            </tr>
+            <tr>
+              <td class="title">
+                <details id="issue_12">
+                  <summary>
+                    <a href="https://github.com/mozilla/platform-tilt/issues/12"
+                      >Lower quality search result pages in third-party browser
+                      engines on Android</a
+                    > <a
+                      class="internal-link"
+                      href="#issue_12"
+                      title="Permalink to this issue"
+                      >#</a
+                    > 
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      The web search experience is tightly integrated with a
+                      number of built-in features in Android (see
+                      https://github.com/mozilla/platform-tilt/issues/8), and
+                      the experience provided to Firefox is inferior compared to
+                      the version provided for Chrome. As seen in the
+                      screenshots below, identical search terms show less
+                      information and receive a lower quality design in Firefox
+                      on Android.
+                    </p>
+                    <p>
+                      While strictly speaking this is an issue with the Google
+                      Search website, given the prominence and integration of
+                      search on Android this is a meaningful user experience gap
+                      that creates an incentive for users to not choose a
+                      third-party browser - especially those implemented with
+                      third-party browser engines, like Firefox. There are no
+                      technical limitations which would prevent this page from
+                      operating in Firefox: an equal experience should be
+                      offered.
+                    </p>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Chrome</th>
+                          <th>Firefox</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <img
+                              src="https://github.com/mozilla/platform-tilt/assets/95570/eea51f92-45d3-4b48-aed1-ac8e8250fd5e"
+                              width="300"
+                            />
+                          </td>
+                          <td>
+                            <img
+                              src="https://github.com/mozilla/platform-tilt/assets/95570/43590042-bb59-43c8-97f5-42fc2610101d"
+                              width="300"
+                            />
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </details>
+              </td>
+              <td class="state">open</td>
+            </tr>
+          </tbody>
+        </table>
+        <table>
+          <caption id="issues_microsoft">
+            Vendor:
+            <b style="text-transform: capitalize">microsoft</b>
+          </caption>
+          <thead>
+            <tr>
+              <th>Issue</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="title">
+                <details id="issue_10">
+                  <summary>
+                    <a href="https://github.com/mozilla/platform-tilt/issues/10"
+                      >Setting default browser on Windows</a
+                    > <a
+                      class="internal-link"
+                      href="#issue_10"
+                      title="Permalink to this issue"
+                      >#</a
+                    > 
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      Allowing a third-party browser to programmatically set
+                      itself as the default is an important platform feature.
+                      Without this, even after the user has installed the
+                      browser of their choice they must navigate operating
+                      system settings and make the choice there as well. This
+                      adds friction and creates inertia to continue using Edge,
+                      despite the user's preference.
+                    </p>
+                    <p>
+                      A well-established design pattern is to allow the
+                      third-party browser to invoke a system prompt which
+                      permits the user to easily confirm or reject the request
+                      to set the current browser as the default. This is an
+                      intuitive user experience that mirrors similar permissions
+                      models used in operating systems, browsers, and web
+                      applications. Android and macOS offer such a capability
+                      (on Android by requesting to hold the
+                      <a
+                        href="https://developer.android.com/reference/android/app/role/RoleManager#ROLE_BROWSER"
+                        >browser role</a
+                      >
+                      and on macOS using
+                      <a
+                        href="https://developer.apple.com/documentation/coreservices/1447760-lssetdefaulthandlerforurlscheme"
+                        >LSSetDefaultHandlerForURLScheme</a
+                      >/<a
+                        href="https://developer.apple.com/documentation/coreservices/1444955-lssetdefaultrolehandlerforconten"
+                        >LSSetDefaultRoleHandlerForContentType</a
+                      >).
+                    </p>
+                    <p>
+                      Unfortunately, Windows does not support anything like this
+                      for third-party browsers: browsers are forced to “deep
+                      link” into the Windows settings UI. On Windows 10 this
+                      requires several clicks and a double confirmation in the
+                      settings UI. On Windows 11 there is a “Set default”
+                      button. Neither is sufficient. Windows should instead
+                      provide a method for third-party browsers to
+                      programmatically request they be set as the default.
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state">open</td>
+            </tr>
+            <tr>
+              <td class="title">
+                <details id="issue_13">
+                  <summary>
+                    <a href="https://github.com/mozilla/platform-tilt/issues/13"
+                      >Default browser is set to Edge by several Windows
+                      flows</a
+                    > <a
+                      class="internal-link"
+                      href="#issue_13"
+                      title="Permalink to this issue"
+                      >#</a
+                    > 
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      In general, the Windows 10 and 11 operating systems have
+                      persistent messaging that Microsoft Edge is the
+                      “recommended” browser for Windows, and offer affordances
+                      to change the default browser to Edge. In some cases the
+                      wording is misleading, asking a user to adopt “recommended
+                      browser settings”, which does not obviously suggest a
+                      default browser change. This messaging is a moving target,
+                      with examples added and removed from Windows over time,
+                      often on UI surfaces that appear automatically on update
+                      or otherwise, making it difficult to enumerate specific
+                      examples.
+                    </p>
+                    <p>
+                      In all cases these Windows components are able to change
+                      the user’s default browser directly, and are not forced to
+                      use the <code>ms-settings:</code> protocol deep linking
+                      that browsers are required to use (see
+                      <a
+                        href="https://github.com/mozilla/platform-tilt/issues/10"
+                        >issue #10</a
+                      >). Windows should consume the same affordances and APIs
+                      that are available to third-party browsers for
+                      setting-to-default.
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state">open</td>
+            </tr>
+            <tr>
+              <td class="title">
+                <details id="issue_14">
+                  <summary>
+                    <a href="https://github.com/mozilla/platform-tilt/issues/14"
+                      >Some Windows features launch Edge instead of the user’s
+                      default browser</a
+                    > <a
+                      class="internal-link"
+                      href="#issue_14"
+                      title="Permalink to this issue"
+                      >#</a
+                    > 
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      There are at least three prominent Windows features that
+                      open URLs in Microsoft Edge and not in the current default
+                      browser. The user’s default browser choice should be
+                      respected when web pages are opened by built-in operating
+                      system features.
+                    </p>
+                    <p>
+                      The first is Windows Search, also known as Start Menu
+                      Search, and formerly known as Cortana. The UI for this
+                      feature is represented by a taskbar search box or search
+                      button (depending on user settings), and a search
+                      suggestions / results UI that appears when activated and
+                      updates as the user types. The suggestions and results UI
+                      also appears if the user starts typing when the start menu
+                      is open, and by the WIN+S hotkey. All links from this UI,
+                      whether they initiate web searches or link directly to
+                      articles or results, open in Microsoft Edge regardless of
+                      the user’s default browser.
+                    </p>
+                    <p>
+                      The second is the new Windows Copilot, currently only
+                      available on Windows 11, which appears as a docked window
+                      on the right side of the screen. If Copilot produces links
+                      in its responses, or offers other links within its
+                      rendering area, these links open in Microsoft Edge
+                      regardless of the user’s default browser.
+                    </p>
+                    <p>
+                      The third are Windows “widgets” which are called “news and
+                      interests” on Windows 10, a UI surface area which can be
+                      activated by a taskbar button. These show information like
+                      news, weather, stocks, and sports scores. On Windows 11
+                      new widgets can be added from 3rd parties. Regardless, all
+                      links to a web page from widgets will open in Microsoft
+                      Edge regardless of the user’s default browser.
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state">open</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-1"></div>
+      <div class="clearfix"></div>
+    </div>
+    <script>
+      function openTarget() {
+        let hash = location.hash.substring(1);
+        let element;
+        if (hash) element = document.getElementById(hash);
+        if (!element) {
+          return;
+        }
+        //if (hash.startsWith('issues_')) {
+        //  [...element.closest("table").querySelectorAll("details")].forEach((details) => details.open = true);
+        //  return;
+        //}
+        if (element && element.tagName.toLowerCase() === "details")
+          details.open = true;
+      }
+      window.addEventListener("hashchange", openTarget);
+      openTarget();
+    </script>
+  </body>
+</html>
