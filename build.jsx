@@ -23,6 +23,7 @@ function pageHTML(children) {
         <head>
           <meta charset="UTF-8" />
           <title>Platform Tilt - Mozilla</title>
+          <meta name="description" content="Platform Tilt tracks technical issues in major software platforms which disadvantage Firefox relative to the first-party browser." />
           <link rel="stylesheet" href="static/page.css" />
         </head>
         <body>
@@ -171,7 +172,6 @@ function IssueTable({ issues }) {
               <details id={`issue_${issue.number}`}>
                 <summary>
                   <a href={issue.html_url}>{issue.title}</a>
-                  &nbsp;
                   <a
                     class="internal-link"
                     href={`#issue_${issue.number}`}
@@ -179,7 +179,6 @@ function IssueTable({ issues }) {
                   >
                     #
                   </a>
-                  &nbsp;
                   {/* <a
                     href={issue.html_url}
                     title={`External link to issue ${issue.number} on GitHub}`}

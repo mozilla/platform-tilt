@@ -49,7 +49,9 @@ table .state {
 table tr:nth-child(2n) {
   background-color: var(--color-bg);
 }
-
+.internal-link {
+  user-select: none;
+}
 .issue-body {
   padding: 5px 10px;
   color: #555;
