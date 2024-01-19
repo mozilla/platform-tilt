@@ -56,6 +56,9 @@ table {
   width: 100%;
   margin-top: 40px;
 }
+.issue-body table {
+  width: auto;
+}
 table td, table th, table tr {
   padding: 0 5px;
 }
