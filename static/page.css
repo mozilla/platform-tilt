@@ -10,6 +10,9 @@
  font-weight: bold;
  font-family: "Zilla Slab", serif;
 }
+.container {
+  padding-bottom: 50px;
+}
 /* https://github.com/twbs/bootstrap/issues/21060#issuecomment-257607922 */
 details > summary:first-of-type {
   display: list-item;
