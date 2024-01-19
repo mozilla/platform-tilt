@@ -1,10 +1,44 @@
 @import url("bootstrap.min.css");
 
-
+@font-face {
+  font-display: swap;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  src: url("Inter-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-display: swap;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: bold;
+  src: url("Inter-Bold.woff2") format("woff2");
+}
+@font-face {
+  font-display: swap;
+  font-family: Inter;
+  font-style: italic;
+  font-weight: normal;
+  src: url("Inter-Italic.woff2") format("woff2");
+}
+@font-face {
+  font-display: swap;
+  font-family: Inter;
+  font-style: italic;
+  font-weight: bold;
+  src: url("Inter-BoldItalic.woff2") format("woff2");
+}
 @font-face {
   font-family: "Zilla Slab";
   font-weight: bold;
   src: url("ZillaSlab-Bold.woff2") format("woff2");
+}
+body {
+  background: #ffffff;
+  color: #000000;
+  font-family: Inter, X-LocaleSpecific, sans-serif;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
 }
 .jumbotron h1 {
  font-weight: bold;
@@ -27,7 +61,8 @@ table td, table th, table tr {
 }
 caption {
   background: #f3f3f3;
-  padding: 10px 4px;
+  color: #222;
+  padding: 10px 6px;
   font-size: 1.2em;
   margin-bottom: 10px;
 }
@@ -42,9 +77,15 @@ details {
 table .title {
   width: 100%;
 }
-table .state {
+
+/* @media only screen and (max-width: 640px) and (orientation: portrait) {
+  td.state, th.state { display: none; }
+} */
+
+td.state {
   vertical-align: top;
-  white-space: nowrap; 
+  white-space: nowrap;
+  font-size: .9em;
 }
 table tr:nth-child(2n) {
   background-color: var(--color-bg);

@@ -52,9 +52,7 @@ function pageHTML(children) {
               </p>
             </div>
 
-            <div class="col-sm-1"></div>
-            <div class="col-sm-10">{children}</div>
-            <div class="col-sm-1"></div>
+            <div class="col-sm-12">{children}</div>
 
             <div class="clearfix"></div>
           </div>
@@ -162,7 +160,7 @@ function IssueTable({ issues }) {
       <thead>
         <tr>
           <th>Issue</th>
-          <th>Status</th>
+          <th class="state">Status</th>
         </tr>
       </thead>
       <tbody>
