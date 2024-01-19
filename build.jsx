@@ -59,6 +59,9 @@ function pageHTML(children) {
           <script
             dangerouslySetInnerHTML={{
               __html: `
+    function expandAll(table) {
+      [...table.querySelectorAll("details")].forEach((details) => details.open = true);
+    }
     function openTarget() {
       let hash = location.hash.substring(1);
       let element;
@@ -152,10 +155,11 @@ Deno.writeTextFileSync(
 
 function IssueTable({ issues }) {
   return (
-    <table>
-      <caption id={`issues_${issues.search_vendor}`}>
+    <table id={`issues_${issues.search_vendor}`}>
+      <caption>
         Vendor:{" "}
         <b style="text-transform: capitalize;">{issues.search_vendor}</b>
+        <button onclick={`expandAll(document.getElementById("issues_${issues.search_vendor}"))`}>Expand all</button>
       </caption>
       <thead>
         <tr>

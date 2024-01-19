@@ -31,10 +31,15 @@
         </p>
       </div>
       <div class="col-sm-12">
-        <table>
-          <caption id="issues_apple">
+        <table id="issues_apple">
+          <caption>
             Vendor:
-            <b style="text-transform: capitalize">apple</b>
+            <b style="text-transform: capitalize">apple</b
+            ><button
+              onclick='expandAll(document.getElementById("issues_apple"))'
+            >
+              Expand all
+            </button>
           </caption>
           <thead>
             <tr>
@@ -663,10 +668,15 @@
             </tr>
           </tbody>
         </table>
-        <table>
-          <caption id="issues_google">
+        <table id="issues_google">
+          <caption>
             Vendor:
-            <b style="text-transform: capitalize">google</b>
+            <b style="text-transform: capitalize">google</b
+            ><button
+              onclick='expandAll(document.getElementById("issues_google"))'
+            >
+              Expand all
+            </button>
           </caption>
           <thead>
             <tr>
@@ -823,10 +833,15 @@
             </tr>
           </tbody>
         </table>
-        <table>
-          <caption id="issues_microsoft">
+        <table id="issues_microsoft">
+          <caption>
             Vendor:
-            <b style="text-transform: capitalize">microsoft</b>
+            <b style="text-transform: capitalize">microsoft</b
+            ><button
+              onclick='expandAll(document.getElementById("issues_microsoft"))'
+            >
+              Expand all
+            </button>
           </caption>
           <thead>
             <tr>
@@ -1003,6 +1018,11 @@
       <div class="clearfix"></div>
     </div>
     <script>
+      function expandAll(table) {
+        [...table.querySelectorAll("details")].forEach(
+          (details) => (details.open = true),
+        );
+      }
       function openTarget() {
         let hash = location.hash.substring(1);
         let element;

@@ -69,6 +69,10 @@ caption {
   font-size: 1.2em;
   margin-bottom: 10px;
 }
+caption button {
+  float: right;
+  font-size: .7em;
+}
 summary {
   font-size: 1.1em;
 }
