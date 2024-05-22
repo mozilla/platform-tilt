@@ -127,6 +127,18 @@ async function getIssuesForLabel(vendor) {
     };
   });
 
+  for (let closed_issue of issues.filter((issue) => issue.state === "closed")) {
+    let events = await octokit.paginate(
+      "GET /repos/{owner}/{repo}/issues/{issue_number}/events",
+      {
+        owner: "mozilla",
+        repo: "platform-tilt",
+        issue_number: closed_issue.number,
+      }
+    );
+    let closed_event = events.findLast((event) => event.event === "closed");
+    closed_issue.closed_event_html_url = `${closed_issue.html_url}#event-${closed_event.id}`;
+  }
   return {
     search_label: label,
     search_vendor: vendor,
@@ -225,7 +237,13 @@ function IssueTable({ issues }) {
             </td>
 
             <td class="state">
-              <span>{issue.state === "closed" ? "closed" : "open"}</span>
+              <span>
+                {issue.closed_event_html_url ? (
+                  <a href={issue.closed_event_html_url}>closed</a>
+                ) : (
+                  <>open</>
+                )}
+              </span>
             </td>
           </tr>
         ))}

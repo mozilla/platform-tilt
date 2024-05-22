@@ -98,7 +98,8 @@ tr.state-open td.state span {
   color: white;
   background: rgb(232, 122, 122);
 }
-tr.state-closed td.state span {
+tr.state-closed td.state span,
+tr.state-closed td.state a {
   color: white;
   background: green;
 }
