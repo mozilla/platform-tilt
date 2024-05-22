@@ -41,8 +41,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 .jumbotron h1 {
- font-weight: bold;
- font-family: "Zilla Slab", serif;
+  font-weight: bold;
+  font-family: "Zilla Slab", serif;
 }
 .container {
   padding-bottom: 50px;
@@ -59,7 +59,9 @@ table {
 .issue-body table {
   width: auto;
 }
-table td, table th, table tr {
+table td,
+table th,
+table tr {
   padding: 0 5px;
 }
 caption {
@@ -71,7 +73,7 @@ caption {
 }
 caption button {
   float: right;
-  font-size: .7em;
+  font-size: 0.7em;
 }
 summary {
   font-size: 1.1em;
@@ -89,16 +91,39 @@ table .title {
   td.state, th.state { display: none; }
 } */
 
+tr.state-closed .issue-link {
+  text-decoration: line-through;
+}
+tr.state-open td.state span {
+  color: white;
+  background: rgb(232, 122, 122);
+}
+tr.state-closed td.state span {
+  color: white;
+  background: green;
+}
+td.state,
+th.state {
+  text-align: end;
+}
 td.state {
   vertical-align: top;
   white-space: nowrap;
-  font-size: .9em;
 }
+td.state span {
+  display: inline-block;
+  margin: 2px 0;
+  border-radius: 5px;
+  padding: 3px;
+  font-size: 0.9em;
+}
+
 table tr:nth-child(2n) {
   background-color: var(--color-bg);
 }
 .internal-link {
   user-select: none;
+  padding-inline-start: 5px;
 }
 .issue-body {
   padding: 5px 10px;
@@ -110,8 +135,4 @@ table tr:nth-child(2n) {
 
 blockquote {
   font-size: 1.1em;
-}
-
-.internal-link {
-  padding-inline-start: 5px;
 }

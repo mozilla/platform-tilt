@@ -23,7 +23,10 @@ function pageHTML(children) {
         <head>
           <meta charset="UTF-8" />
           <title>Platform Tilt - Mozilla</title>
-          <meta name="description" content="Platform Tilt tracks technical issues in major software platforms which disadvantage Firefox relative to the first-party browser." />
+          <meta
+            name="description"
+            content="Platform Tilt tracks technical issues in major software platforms which disadvantage Firefox relative to the first-party browser."
+          />
           <link rel="stylesheet" href="static/page.css" />
         </head>
         <body>
@@ -45,7 +48,8 @@ function pageHTML(children) {
                 more level playing field.
               </p>
               <p>
-                Further discussion on the live issues can be found in our <a href="https://github.com/mozilla/platform-tilt/">
+                Further discussion on the live issues can be found in our{" "}
+                <a href="https://github.com/mozilla/platform-tilt/">
                   platform-tilt issue tracker
                 </a>
                 .
@@ -159,7 +163,11 @@ function IssueTable({ issues }) {
       <caption>
         Vendor:{" "}
         <b style="text-transform: capitalize;">{issues.search_vendor}</b>
-        <button onclick={`expandAll(document.getElementById("issues_${issues.search_vendor}"))`}>Expand all</button>
+        <button
+          onclick={`expandAll(document.getElementById("issues_${issues.search_vendor}"))`}
+        >
+          Expand all
+        </button>
       </caption>
       <thead>
         <tr>
@@ -169,11 +177,13 @@ function IssueTable({ issues }) {
       </thead>
       <tbody>
         {issues.issues.map((issue) => (
-          <tr>
+          <tr className={`state-${issue.state}`}>
             <td class="title">
               <details id={`issue_${issue.number}`}>
                 <summary>
-                  <a href={issue.html_url}>{issue.title}</a>
+                  <a href={issue.html_url} class="issue-link">
+                    {issue.title}
+                  </a>
                   <a
                     class="internal-link"
                     href={`#issue_${issue.number}`}
@@ -212,7 +222,10 @@ function IssueTable({ issues }) {
                 ></div>
               </details>
             </td>
-            <td class="state">{issue.state}</td>
+
+            <td class="state">
+              <span>{issue.state === "closed" ? "closed" : "open"}</span>
+            </td>
           </tr>
         ))}
       </tbody>
