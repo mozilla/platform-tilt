@@ -97,6 +97,7 @@ async function getIssuesForLabel(vendor) {
   let issues = await octokit.paginate("GET /repos/{owner}/{repo}/issues", {
     owner: "mozilla",
     repo: "platform-tilt",
+    state: "all",
     labels: label,
   });
   issues = issues.reverse().map((issue) => {
