@@ -725,6 +725,230 @@
               </td>
               <td class="state"><span>open</span></td>
             </tr>
+            <tr class="state-open">
+              <td class="title">
+                <details id="issue_36">
+                  <summary>
+                    <a
+                      href="https://github.com/mozilla/platform-tilt/issues/36"
+                      class="issue-link"
+                      >SFSafariViewController should respect the user’s default
+                      browser</a
+                    ><a
+                      class="internal-link"
+                      href="#issue_36"
+                      title="Permalink to this issue"
+                      >#</a
+                    >
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      <a
+                        href="https://developer.apple.com/documentation/safariservices/sfsafariviewcontroller"
+                        >SFSafariViewController</a
+                      >
+                      is a high level API that allows an iOS app to hand web
+                      content rendering off to the user’s browser while still
+                      being “embedded” within the application. It’s the
+                      preferred solution to rendering arbitrary web content in
+                      most apps compared with a lower level webview, in part
+                      because it allows the browser more control over the
+                      browsing experience (which in turn gives the application
+                      less control over modifying or tracking web activity).
+                    </p>
+                    <p>
+                      However, SFSafariViewController always uses a version of
+                      Safari regardless of a user’s default browser. This
+                      creates an inconsistent user experience for viewing web
+                      content, and drives traffic away from alternative
+                      browsers. SFSafariViewController should be changed to
+                      respect the user’s default browser.
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state"><span>open</span></td>
+            </tr>
+            <tr class="state-open">
+              <td class="title">
+                <details id="issue_37">
+                  <summary>
+                    <a
+                      href="https://github.com/mozilla/platform-tilt/issues/37"
+                      class="issue-link"
+                      >Existing browsers with alternative engines should be able
+                      to ship a single binary &amp; bundle on iOS</a
+                    ><a
+                      class="internal-link"
+                      href="#issue_37"
+                      title="Permalink to this issue"
+                      >#</a
+                    >
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      Apple's current proposal requires browser vendors to
+                      distribute a separate app in the EU if they wish to use
+                      their own browser engine, rather than updating their
+                      existing app.
+                    </p>
+                    <p>
+                      This would force existing EU users to switch to a new app,
+                      which is infeasible and creates a significant barrier to
+                      competition. This would lead to a poor user experience
+                      when transitioning to and from the alternative browser
+                      engine app. Some examples of areas of concern for Firefox
+                      are:
+                    </p>
+                    <ul>
+                      <li>
+                        EU users of WebKit Firefox being unable to effectively
+                        discover and migrate to Gecko Firefox. The current model
+                        introduces significant friction and risks for the user
+                        and for Mozilla.
+                      </li>
+                      <li>
+                        EU users of Gecko Firefox traveling outside the EU for
+                        &gt; 30 days. In the current model they would lose
+                        access to their browser at that time with no recourse.
+                      </li>
+                      <li>
+                        Users outside of the EU using WebKit Firefox who
+                        permanently relocate to the EU. In the current model we
+                        understand that they would remain on an “orphaned”
+                        version of WebKit Firefox (unable to receive updates),
+                        and would need to navigate through many steps on their
+                        own to migrate to Gecko Firefox.
+                      </li>
+                    </ul>
+                    <p>
+                      Moreover, from the browser developer point of view, it
+                      requires developing, maintaining, and deploying two
+                      completely separate apps. This creates complex data
+                      migration issues for the situations above, increases the
+                      likelihood of user churn and reduced acquisition, and
+                      prevents an iterative A/B rollout to provide the best
+                      experience for iOS users in the EU.
+                    </p>
+                    <p>
+                      A solution which is much simpler and more likely to make
+                      BrowserEngineKit effective would be to allow browser
+                      vendors to ship a single worldwide binary &amp; bundle
+                      that contains webviews for both engines, with the OS
+                      informing the app at start up whether it is
+                      BrowserEngineKit eligible or not (based on the same logic
+                      that currently causes an error at startup).
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state"><span>open</span></td>
+            </tr>
+            <tr class="state-open">
+              <td class="title">
+                <details id="issue_38">
+                  <summary>
+                    <a
+                      href="https://github.com/mozilla/platform-tilt/issues/38"
+                      class="issue-link"
+                      >Web developers should be able to test with alternative
+                      browser engines on iOS regardless of location</a
+                    ><a
+                      class="internal-link"
+                      href="#issue_38"
+                      title="Permalink to this issue"
+                      >#</a
+                    >
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      BrowserEngineKit was
+                      <a
+                        href="https://www.apple.com/newsroom/2024/01/apple-announces-changes-to-ios-safari-and-the-app-store-in-the-european-union/"
+                        >originally announced</a
+                      >
+                      with a location restriction preventing browser developers
+                      from testing their own engines on devices located outside
+                      the EU. This restriction was
+                      <a href="https://developer.apple.com/news/?id=qs5bol0g"
+                        >lifted for local development and testing</a
+                      >
+                      as part of 18.2 beta, but it still exists for web
+                      developers.
+                    </p>
+                    <p>
+                      This matters because many web developers located outside
+                      the EU support users within the EU. If they are unable to
+                      test their sites within alternative browser engines they
+                      will not be able to reproduce user issues and ensure their
+                      sites work well across engines on the platform.
+                    </p>
+                    <p>
+                      This restriction would ultimately lead to a worse
+                      experience for end users, and would disadvantage
+                      alternative browsers on the platform. Web developers
+                      should be offered a mechanism to easily test in
+                      alternative browser engines regardless of their location.
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state"><span>open</span></td>
+            </tr>
+            <tr class="state-open">
+              <td class="title">
+                <details id="issue_39">
+                  <summary>
+                    <a
+                      href="https://github.com/mozilla/platform-tilt/issues/39"
+                      class="issue-link"
+                      >Browsers with alternative engines should be able to
+                      install and manage home screen web apps on iOS</a
+                    ><a
+                      class="internal-link"
+                      href="#issue_39"
+                      title="Permalink to this issue"
+                      >#</a
+                    >
+                  </summary>
+                  <div class="issue-body">
+                    <p>
+                      There’s an
+                      <a
+                        href="https://developer.apple.com/documentation/browserenginekit/bewebappmanifest"
+                        >API</a
+                      >
+                      for an alternative browser engine to add a web app to the
+                      iOS home screen, but the app opens in Safari. This creates
+                      a disjointed user experience before and after
+                      installation: based on different features, user state, and
+                      preferences across engines.
+                    </p>
+                    <p>
+                      Apple has
+                      <a
+                        href="https://developer.apple.com/support/dma-and-apps-in-the-eu#8"
+                        >argued against</a
+                      >
+                      allowing non-WebKit engines to render home screen web apps
+                      on security grounds. However, the fundamental security
+                      requirements for home screen web apps are the same as
+                      those already enforced in ordinary web browsing, where
+                      pages from different sites need to be sandboxed and
+                      isolated both from each other and from the rest of the
+                      device.
+                    </p>
+                    <p>
+                      It is conceptually straightforward for an operating system
+                      to delegate web app rendering to a third-party browser
+                      engine, and Android has done this for years. This should
+                      be enabled in iOS as well.
+                    </p>
+                  </div>
+                </details>
+              </td>
+              <td class="state"><span>open</span></td>
+            </tr>
           </tbody>
         </table>
         <table id="issues_google">
